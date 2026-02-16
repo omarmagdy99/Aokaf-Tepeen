@@ -451,14 +451,14 @@
             "🌟 متفرغ"
         ];
 
-        // // دالة عرض رسالة منبثقة
-        // function showCopyAlert(success) {
-        //     if (success) {
-        //         alert('✅ تم نسخ الجدول بنجاح');
-        //     } else {
-        //         alert('❌ فشل النسخ، يرجى المحاولة مرة أخرى');
-        //     }
-        // }
+        // دالة عرض رسالة منبثقة
+        function showCopyAlert(success) {
+            if (success) {
+                alert('✅ تم نسخ الجدول بنجاح');
+            } else {
+                alert('❌ فشل النسخ، يرجى المحاولة مرة أخرى');
+            }
+        }
 
         // دالة النسخ المعدلة والمؤكدة
         function copyToClipboard(text, button) {
@@ -491,25 +491,27 @@
         }
 
         // تحضير نص النسخ
-        function createCopyContent(preacherName, sermonsList, errors) {
+        function createCopyContent(preacherName, sermonsList, errors, sermonHeaders) {
             let content = `🎙️ الشيخ ${preacherName}\n`;
             content += `📋 جدول الخطب:\n`;
             content += `──────────────\n`;
             
             sermonsList.forEach((sermon) => {
-                const orderText = getSermonOrderText(sermon.order);
+                // ✅ استخدام عنوان العمود بدلاً من النص الثابت
+                const headerText = sermonHeaders[sermon.order - 1] || `الخطبة ${getSermonOrderText(sermon.order)}`;
+                
                 if (sermon.hasPreacher) {
-                    content += `الخطبة ${orderText}: ${sermon.mosque}\n`;
+                    content += `${headerText}: ${sermon.mosque}\n`;
                 } else {
                     const restMessage = getRandomRestMessage();
-                    content += `الخطبة ${orderText}: ${restMessage}\n`;
+                    content += `${headerText}: ${restMessage}\n`;
                 }
             });
             
             if (errors.length > 0) {
                 content += `\n⚠️ تنبيه: يوجد خطأ!\n`;
                 errors.forEach(error => {
-                    content += `- مكرر في الخطبة ${getSermonOrderText(error.order)}: ${error.mosques.join(' و ')}\n`;
+                    content += `- مكرر في ${sermonHeaders[error.order - 1]}: ${error.mosques.join(' و ')}\n`;
                 });
             }
             
@@ -597,11 +599,25 @@
                     return;
                 }
 
+                // ✅ قراءة عناوين الأعمدة (الصف الأول)
+                let sermonHeaders = ['الخطبة الأولى', 'الخطبة الثانية', 'الخطبة الثالثة', 'الخطبة الرابعة']; // قيم افتراضية
+                
+                if (sermonsData && sermonsData.length > 0 && sermonsData[0]?.length >= 6) {
+                    // الصف الأول هو العناوين (من العمود C إلى F)
+                    sermonHeaders = [
+                        sermonsData[0][2] || 'الخطبة الأولى',
+                        sermonsData[0][3] || 'الخطبة الثانية',
+                        sermonsData[0][4] || 'الخطبة الثالثة',
+                        sermonsData[0][5] || 'الخطبة الرابعة'
+                    ];
+                }
+
                 // تجميع المساجد
                 const sermonsByMosque = [];
                 
                 if (sermonsData && sermonsData.length > 0) {
-                    const startRow = (sermonsData[0]?.[0] === 'المسجد') ? 1 : 0;
+                    // نبدأ من الصف الثاني (بعد العناوين)
+                    const startRow = 1;
                     
                     for (let i = startRow; i < sermonsData.length; i++) {
                         const row = sermonsData[i];
@@ -664,7 +680,7 @@
                     }
                 }
 
-                displayResults(preacherName, orderedSermons, errors);
+                displayResults(preacherName, orderedSermons, errors, sermonHeaders);
 
             } catch (error) {
                 resultsDiv.innerHTML = `<div class="error-message">❌ خطأ: ${error.message}</div>`;
@@ -674,7 +690,7 @@
             }
         }
 
-        function displayResults(preacherName, sermonsList, errors) {
+        function displayResults(preacherName, sermonsList, errors, sermonHeaders) {
             const totalSermons = sermonsList.filter(s => s.hasPreacher).length;
             const totalRest = sermonsList.filter(s => !s.hasPreacher).length;
             const hasErrors = errors.length > 0;
@@ -707,7 +723,7 @@
                     resultsHTML += `
                         <div class="error-item">
                             <span class="error-icon">🔴</span>
-                            <span>مكرر في <strong>الخطبة ${getSermonOrderText(error.order)}</strong>:</span>
+                            <span>مكرر في <strong>${sermonHeaders[error.order - 1]}</strong>:</span>
                             <span class="error-mosque">${error.mosques.join(' و ')}</span>
                         </div>
                     `;
@@ -718,12 +734,13 @@
             resultsHTML += `<div class="sermons-table">`;
 
             sermonsList.forEach((sermon) => {
-                const orderText = getSermonOrderText(sermon.order);
+                // ✅ استخدام عنوان العمود بدلاً من النص الثابت
+                const headerText = sermonHeaders[sermon.order - 1];
                 
                 if (sermon.hasPreacher) {
                     resultsHTML += `
                         <div class="sermon-row present">
-                            <div class="sermon-order">الخطبة ${orderText}</div>
+                            <div class="sermon-order">${headerText}</div>
                             <div class="sermon-content">
                                 <span class="sermon-icon">📌</span>
                                 <span class="sermon-mosque">${sermon.mosque}</span>
@@ -734,7 +751,7 @@
                     const restMessage = getRandomRestMessage();
                     resultsHTML += `
                         <div class="sermon-row rest">
-                            <div class="sermon-order">الخطبة ${orderText}</div>
+                            <div class="sermon-order">${headerText}</div>
                             <div class="sermon-content">
                                 <div class="rest-badge">
                                     <span>🌿</span> ${restMessage}
@@ -771,11 +788,11 @@
 
             resultsDiv.innerHTML = resultsHTML;
 
-            // ✅ ربط زر النسخ بعد إضافة النتائج
+            // ربط زر النسخ بعد إضافة النتائج
             const copyBtn = document.getElementById('mainCopyButton');
             if (copyBtn) {
                 copyBtn.onclick = function() {
-                    const content = createCopyContent(preacherName, sermonsList, errors);
+                    const content = createCopyContent(preacherName, sermonsList, errors, sermonHeaders);
                     copyToClipboard(content, this);
                 };
             }
