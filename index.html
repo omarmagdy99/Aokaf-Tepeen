@@ -1,537 +1,541 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>خطباء التبين - البحث بالرقم السري</title>
+    <title>خطباء التبين - نظام إدارة الخطب</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap RTL support -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?studio=Jannah&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* التنسيقات الأساسية */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
+            position: relative;
         }
         
-        .container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 600px;
-            margin: 10px auto;
+        /* تأثير الخلفية */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container-custom {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* بطاقة البحث */
+        .search-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 25px;
+        }
+        
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo-icon i {
+            font-size: 35px;
+            color: white;
         }
         
         h1 {
-            color: #1e3c5c;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 1.8em;
+            margin-bottom: 10px;
         }
         
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1em;
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 10px;
         }
         
-        input[type="text"] {
-            width: 100%;
-            padding: 15px;
+        .input-group-custom {
+            position: relative;
             margin-bottom: 20px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: border 0.3s;
-            -webkit-appearance: none;
         }
         
-        input[type="text"]:focus {
-            border-color: #3498db;
+        .input-group-custom i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+        
+        .form-control-custom {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        .form-control-custom:focus {
+            border-color: #764ba2;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
         }
         
-        button {
-            background-color: #1e3c5c;
-            color: white;
-            padding: 16px 20px;
+        .btn-search {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
             width: 100%;
-            transition: background-color 0.3s;
-            margin-bottom: 20px;
-            -webkit-tap-highlight-color: transparent;
+            color: white;
         }
         
-        button:hover {
-            background-color: #143244;
+        .btn-search:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
         }
         
-        button:disabled {
-            background-color: #95a5a6;
+        .btn-search:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
         }
         
-        #results {
-            margin-top: 20px;
-            border-top: 2px solid #eee;
-            padding-top: 20px;
-        }
-        
-        /* تنسيقات البطاقة الرئيسية */
-        .preacher-card {
+        /* بطاقة النتائج */
+        .result-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 32px;
             overflow: hidden;
-            margin-top: 15px;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.5s ease;
         }
         
-        /* حاوية زر النسخ */
-        .copy-button-container {
-            background: linear-gradient(135deg, #1e3c5c 0%, #2c5282 100%);
-            padding: 15px 20px 5px 20px;
-            display: flex;
-            justify-content: flex-end;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        /* زر النسخ */
-        .copy-button {
-            background-color: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 40px;
-            padding: 10px 20px;
-            font-size: 15px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-            border: none;
-            width: fit-content;
-            font-weight: 500;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .copy-button:hover {
-            background-color: rgba(255,255,255,0.3);
-        }
-        
-        .copy-button:active {
-            transform: scale(0.95);
-        }
-        
-        .copy-button.copied {
-            background-color: #27ae60;
-        }
-        
-        /* رأس البطاقة - اسم الخطيب */
+        /* Header with preacher name */
         .preacher-header {
-            background: linear-gradient(135deg, #1e3c5c 0%, #2c5282 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preacher-header::before {
+            content: 'ﱯ';
+            font-family: monospace;
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            font-size: 120px;
+            opacity: 0.1;
             color: white;
-            padding: 0px 20px 20px 20px;
         }
         
         .preacher-name {
-            font-size: 1.6em;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
-            word-break: break-word;
-            line-height: 1.4;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
         }
         
-        .preacher-name-icon {
-            font-size: 1.4em;
+        .preacher-name i {
+            font-size: 2rem;
         }
         
-        /* تنسيق تحذير الأخطاء */
-        .error-alert {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            border-right: 6px solid #dc2626;
-            padding: 15px;
-            margin: 15px 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1);
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 8px 20px;
+            color: white;
+            transition: all 0.3s;
+            font-size: 0.9rem;
         }
         
-        .error-alert-title {
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        /* Sermon items */
+        .sermon-item {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+        
+        .sermon-item:last-child {
+            border-bottom: none;
+        }
+        
+        .sermon-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .sermon-title {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #991b1b;
-            font-size: 1.2em;
-            font-weight: bold;
+            gap: 12px;
             margin-bottom: 12px;
         }
         
-        .error-alert-title span {
-            font-size: 1.4em;
-        }
-        
-        .error-item {
-            background-color: white;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            border-right: 4px solid #dc2626;
+        .sermon-badge {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border-radius: 15px;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
-            color: #7f1d1d;
-            font-size: 0.95em;
+            justify-content: center;
         }
         
-        .error-item:last-child {
-            margin-bottom: 0;
+        .sermon-badge i {
+            font-size: 1.3rem;
+            color: #764ba2;
         }
         
-        .error-icon {
-            font-size: 1.2em;
+        .sermon-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin: 0;
         }
         
-        .error-mosque {
-            font-weight: bold;
-            color: #991b1b;
-        }
-        
-        .error-order {
-            background-color: #fee2e2;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            color: #991b1b;
-        }
-        
-        /* محتوى البطاقة - جدول الخطب */
-        .sermons-table {
-            padding: 15px;
-            background-color: #f8fafc;
-        }
-        
-        .sermon-row {
+        .mosque-info {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 15px;
+            margin: 10px 0;
             display: flex;
-            flex-direction: column;
-            padding: 15px;
-            margin-bottom: 10px;
-            background-color: white;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-            border-right: 4px solid transparent;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         
-        .sermon-row.present {
-            border-right-color: #27ae60;
+        .mosque-info i {
+            color: #764ba2;
+            font-size: 1rem;
         }
         
-        .sermon-row.rest {
-            border-right-color: #e67e22;
-            background-color: #fffaf0;
-        }
-        
-        .sermon-order {
-            font-weight: 600;
+        .mosque-name {
             color: #4a5568;
-            font-size: 1em;
-            margin-bottom: 8px;
-        }
-        
-        .sermon-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .sermon-icon {
-            font-size: 1.2em;
-        }
-        
-        .sermon-mosque {
-            font-size: 1.1em;
-            color: #2c3e50;
             font-weight: 500;
-            word-break: break-word;
             flex: 1;
         }
         
-        .rest-badge {
+        .rest-badge-modern {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            color: #92400e;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.95em;
-            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 20px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 5px rgba(251, 191, 36, 0.2);
-            width: 100%;
-        }
-        
-        .rest-badge span {
-            font-size: 1.2em;
-        }
-        
-        /* ملخص سريع */
-        .quick-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 0 15px 15px 15px;
-            padding: 15px;
-            background-color: #e8f4f8;
-            border-radius: 14px;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
             gap: 8px;
-            color: #1e3c5c;
-            font-size: 0.95em;
-            background: rgba(255,255,255,0.5);
-            padding: 8px 15px;
-            border-radius: 30px;
+            color: #92400e;
+            font-weight: 600;
         }
         
-        .stat-icon {
-            font-size: 1.2em;
+        .form-select-custom {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 10px 15px;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.3s;
+            background-color: white;
         }
         
-        .stat-value {
-            font-weight: bold;
-            margin-left: 4px;
+        .form-select-custom:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
         }
         
-        .footer-quote {
-            margin: 0 15px 15px 15px;
-            padding: 15px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 12px;
-            text-align: center;
-            color: #6c757d;
-            font-style: italic;
-            font-size: 0.9em;
-            line-height: 1.6;
-        }
-        
-        .no-results, .error-message {
-            text-align: center;
-            padding: 30px 20px;
-            background-color: #f9f9f9;
-            border-radius: 16px;
-            margin: 20px 0;
-        }
-        
-        .no-results {
-            color: #7f8c8d;
-            font-size: 1.1em;
-        }
-        
-        .error-message {
-            color: #c0392b;
-            background-color: #f2dede;
-            border: 1px solid #e74c3c;
-        }
-        
-        .loading {
-            text-align: center;
-            color: #3498db;
-            font-weight: bold;
-            margin: 20px 0;
+        /* Stats section */
+        .stats-section {
+            background: #f8f9fa;
             padding: 20px;
-            font-size: 1.2em;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-card i {
+            font-size: 1.2rem;
+        }
+        
+        .stat-number {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #2d3748;
+        }
+        
+        /* Loading animation */
+        .spinner-custom {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top-color: #764ba2;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .toast-custom {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3748;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .error-alert-modern {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px;
         }
         
         .footer-note {
-            margin-top: 20px;
-            font-size: 0.85em;
-            color: #7f8c8d;
             text-align: center;
-            padding: 0 10px;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
         }
         
-        /* تحسينات للموبايل */
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-                margin-bottom: 20px;
-            }
-            
+        @media (max-width: 576px) {
             .preacher-name {
-                font-size: 1.4em;
+                font-size: 1.3rem;
+                flex-wrap: wrap;
             }
             
-            .copy-button {
-                padding: 8px 16px;
-                font-size: 14px;
+            .search-card {
+                padding: 20px;
             }
             
-            .sermon-order {
-                font-size: 0.95em;
-            }
-            
-            .sermon-mosque {
-                font-size: 1em;
-            }
-            
-            .rest-badge {
-                font-size: 0.9em;
-                padding: 6px 14px;
-            }
-            
-            .stat-item {
-                font-size: 0.9em;
-                padding: 6px 12px;
-            }
-            
-            .error-item {
-                font-size: 0.9em;
+            .stat-card {
+                padding: 8px 18px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>🔍 خطباء التبين</h1>
-
-        <label for="nationalId">أدخل الرقم السري</label>
-        <input type="text" id="nationalId" placeholder="مثال: 12345678901234" inputmode="numeric" maxlength="14">
-        <button id="searchBtn">بحث عن الخطب</button>
-
+    <div class="container-custom">
+        <!-- بطاقة البحث -->
+        <div class="search-card">
+            <div class="logo-icon">
+                <i class="fas fa-mosque"></i>
+            </div>
+            <h1>خطباء التبين</h1>
+            <div class="text-center mb-4">
+                <span class="subtitle">نظام إدارة وتأكيد الخطب</span>
+            </div>
+            
+            <div class="input-group-custom">
+                <i class="fas fa-lock"></i>
+                <input type="text" id="nationalId" class="form-control-custom" placeholder="الرقم السري" inputmode="numeric" maxlength="14">
+            </div>
+            
+            <button id="searchBtn" class="btn-search">
+                <i class="fas fa-search"></i> بحث عن الخطب
+            </button>
+        </div>
+        
         <div id="results"></div>
+        
         <div class="footer-note">
-            * البيانات من Google Sheets
+            <i class="fas fa-database"></i> نظام إدارة خطباء التبين
         </div>
     </div>
 
     <script>
-        // ✅ الرابط الخاص بـ Google Apps Script
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxM-Ev7G4baHGJ8mIDLCaNoi_g7K2fAUk2uJSJz7ZReB93YARS9sRvan3rZaFRBBUcrkA/exec';
-        
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzvmtkUNKxqFvd9ruJ4zcWXMCFiNz-CsG1LAasIooG8NwL8Ynh_VV1NZFdTJF9vtTdd-w/exec';
+
         const nationalIdInput = document.getElementById('nationalId');
         const searchBtn = document.getElementById('searchBtn');
         const resultsDiv = document.getElementById('results');
 
-        // رسائل الإستراحة
-        const restMessages = [
-            "🌿 إجازة",
-            "🌸 استراحة",
-            "✨ إجازة",
-            "🕊️ راحة",
-            "🍃 إجازة",
-            "🌟 متفرغ"
+        let cachedData = null;
+        let dataLoadingPromise = null;
+        let preachersMap = null;
+        let sermonsByMosqueCache = null;
+
+        let currentPreacherName = '';
+        let currentNationalId = '';
+        let currentSermonHeaders = ['الخطبة الأولى', 'الخطبة الثانية', 'الخطبة الثالثة', 'الخطبة الرابعة'];
+        let currentSavedStatuses = { 1: '', 2: '', 3: '', 4: '' };
+
+        const restMessages = ["🌿 إجازة", "🌸 استراحة", "✨ إجازة", "🕊️ راحة", "🍃 إجازة", "🌟 متفرغ"];
+        
+        const HAS_MOSQUE_OPTIONS = [
+            { value: "", text: "-- اختر الحالة --" },
+            { value: "تأكيد الحضور", text: "✅ تأكيد الحضور" },
+            { value: "معتذر", text: "❌ معتذر" }
         ];
 
-        // دالة عرض رسالة منبثقة
-        function showCopyAlert(success) {
-            if (success) {
-                alert('✅ تم نسخ الجدول بنجاح');
-            } else {
-                alert('❌ فشل النسخ، يرجى المحاولة مرة أخرى');
-            }
+        const NO_MOSQUE_OPTIONS = [
+            { value: "", text: "-- اختر الحالة --" },
+            { value: "مستعد للخطبة", text: "🟢 مستعد للخطبة" },
+            { value: "معتذر", text: "❌ معتذر" }
+        ];
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-custom';
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
+            if (isError) toast.style.background = '#dc2626';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // دالة النسخ المعدلة والمؤكدة
-        function copyToClipboard(text, button) {
-            // التأكد من وجود النص
-            if (!text) {
-                alert('❌ لا يوجد نص للنسخ');
-                return;
-            }
+        async function fetchAllData(forceRefresh = false) {
+            if (cachedData && !forceRefresh) return cachedData;
+            if (dataLoadingPromise) return dataLoadingPromise;
             
-            // محاولة النسخ
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    // نجاح
-                    button.textContent = '✓ تم!';
-                    button.classList.add('copied');
-                    showCopyAlert(true);
+            dataLoadingPromise = (async () => {
+                try {
+                    const response = await fetch(APPS_SCRIPT_URL);
+                    if (!response.ok) throw new Error('فشل الاتصال بالخادم');
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error);
                     
-                    setTimeout(() => {
-                        button.textContent = '📋 نسخ الجدول';
-                        button.classList.remove('copied');
-                    }, 2000);
-                }).catch(err => {
-                    console.error('فشل النسخ:', err);
-                    showCopyAlert(false);
-                });
-            } else {
-                // لو المتصفح قديم
-                alert('❌ المتصفح لا يدعم خاصية النسخ');
-            }
-        }
-
-        // تحضير نص النسخ
-        function createCopyContent(preacherName, sermonsList, errors, sermonHeaders) {
-            let content = `🎙️ الشيخ ${preacherName}\n`;
-            content += `📋 جدول الخطب:\n`;
-            content += `──────────────\n`;
-            
-            sermonsList.forEach((sermon) => {
-                // ✅ استخدام عنوان العمود بدلاً من النص الثابت
-                const headerText = sermonHeaders[sermon.order - 1] || `الخطبة ${getSermonOrderText(sermon.order)}`;
-                
-                if (sermon.hasPreacher) {
-                    content += `${headerText}: ${sermon.mosque}\n`;
-                } else {
-                    const restMessage = getRandomRestMessage();
-                    content += `${headerText}: ${restMessage}\n`;
+                    cachedData = data;
+                    preachersMap = new Map();
+                    if (data.preachers && data.preachers.length > 0) {
+                        const startRow = (data.preachers[0]?.[0] === 'الاسم' || data.preachers[0]?.[0] === 'الإسم') ? 1 : 0;
+                        for (let i = startRow; i < data.preachers.length; i++) {
+                            const row = data.preachers[i];
+                            if (row?.length >= 2 && row[1]) {
+                                const nationalId = row[1].toString().trim();
+                                if (nationalId) preachersMap.set(nationalId, row[0]?.toString().trim() || null);
+                            }
+                        }
+                    }
+                    return data;
+                } catch (error) {
+                    throw error;
+                } finally {
+                    dataLoadingPromise = null;
                 }
-            });
-            
-            if (errors.length > 0) {
-                content += `\n⚠️ تنبيه: يوجد خطأ!\n`;
-                errors.forEach(error => {
-                    content += `- مكرر في ${sermonHeaders[error.order - 1]}: ${error.mosques.join(' و ')}\n`;
-                });
-            }
-            
-            content += `──────────────\n`;
-            content += `📅 ${new Date().toLocaleDateString('ar-EG')}\n`;
-            content += `🔗 نظام خطباء التبين`;
-            
-            return content;
+            })();
+            return dataLoadingPromise;
         }
 
-        async function fetchAllData() {
+        async function saveSermonStatus(nationalId, sermonOrder, status) {
             try {
-                const response = await fetch(APPS_SCRIPT_URL);
-                if (!response.ok) throw new Error('فشل الاتصال');
-                const data = await response.json();
-                if (data.error) throw new Error(data.error);
-                return data;
+                const url = `${APPS_SCRIPT_URL}?action=updateStatus&nationalId=${encodeURIComponent(nationalId)}&sermonOrder=${sermonOrder}&status=${encodeURIComponent(status)}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                return result;
             } catch (error) {
-                console.error('خطأ:', error);
-                throw error;
+                console.error('خطأ في الحفظ:', error);
+                return { success: false, error: error.message };
             }
         }
 
@@ -539,272 +543,331 @@
             return restMessages[Math.floor(Math.random() * restMessages.length)];
         }
 
-        function getSermonOrderText(order) {
-            const orders = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة'];
-            return orders[order - 1] || order;
-        }
-
-        // كشف الأخطاء
         function detectErrors(sermonsByMosque, preacherName) {
             const errors = [];
             for (let order = 1; order <= 4; order++) {
                 const mosquesWithPreacher = [];
                 sermonsByMosque.forEach(mosque => {
                     const sermon = mosque.sermons.find(s => s.order === order);
-                    if (sermon && sermon.preacher === preacherName) {
-                        mosquesWithPreacher.push(mosque.name);
-                    }
+                    if (sermon && sermon.preacher === preacherName) mosquesWithPreacher.push(mosque.name);
                 });
-                if (mosquesWithPreacher.length > 1) {
-                    errors.push({ order, mosques: mosquesWithPreacher });
-                }
+                if (mosquesWithPreacher.length > 1) errors.push({ order, mosques: mosquesWithPreacher });
             }
             return errors;
         }
 
         async function performSearch() {
             const nationalId = nationalIdInput.value.trim();
-            
             if (!nationalId) {
-                resultsDiv.innerHTML = '<div class="error-message">❌ أدخل الرقم السري</div>';
+                showToast('أدخل الرقم السري', true);
                 return;
             }
 
+            currentNationalId = nationalId;
             searchBtn.disabled = true;
-            searchBtn.textContent = 'جاري البحث...';
-            resultsDiv.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث...';
+            resultsDiv.innerHTML = '<div class="text-center py-5"><div class="spinner-custom"></div><p class="mt-3 text-white">جاري تحميل البيانات...</p></div>';
 
             try {
+                let preacherName = preachersMap?.get(nationalId);
+                if (!preacherName) {
+                    await fetchAllData(true);
+                    preacherName = preachersMap?.get(nationalId);
+                    if (!preacherName) {
+                        resultsDiv.innerHTML = '<div class="result-card p-5 text-center"><i class="fas fa-user-slash fa-3x mb-3" style="color: #764ba2;"></i><h4>لا يوجد خطيب بهذا الرقم</h4><p class="text-muted">تأكد من الرقم السري وحاول مرة أخرى</p></div>';
+                        searchBtn.disabled = false;
+                        searchBtn.innerHTML = '<i class="fas fa-search"></i> بحث عن الخطب';
+                        return;
+                    }
+                }
+
                 const allData = await fetchAllData();
                 const preachersData = allData.preachers;
                 const sermonsData = allData.sermons;
+                const preachersStatus = allData.preachersStatus || {};
 
-                // البحث عن الخطيب
-                let preacherName = null;
-                if (preachersData && preachersData.length > 0) {
-                    const startRow = (preachersData[0]?.[0] === 'الاسم') ? 1 : 0;
-                    for (let i = startRow; i < preachersData.length; i++) {
-                        const row = preachersData[i];
-                        if (row?.length >= 2 && row[1]?.toString().trim() === nationalId) {
-                            preacherName = row[0]?.toString().trim() || null;
-                            break;
-                        }
-                    }
-                }
+                currentSavedStatuses = preachersStatus[nationalId]?.statuses || { 1: '', 2: '', 3: '', 4: '' };
+                currentPreacherName = preacherName;
 
-                if (!preacherName) {
-                    resultsDiv.innerHTML = '<div class="no-results">😕 لا يوجد خطيب بهذا الرقم</div>';
-                    searchBtn.disabled = false;
-                    searchBtn.textContent = 'بحث عن الخطب';
-                    return;
-                }
-
-                // ✅ قراءة عناوين الأعمدة (الصف الأول)
-                let sermonHeaders = ['الخطبة الأولى', 'الخطبة الثانية', 'الخطبة الثالثة', 'الخطبة الرابعة']; // قيم افتراضية
-                
-                if (sermonsData && sermonsData.length > 0 && sermonsData[0]?.length >= 6) {
-                    // الصف الأول هو العناوين (من العمود C إلى F)
-                    sermonHeaders = [
-                        sermonsData[0][2] || 'الخطبة الأولى',
-                        sermonsData[0][3] || 'الخطبة الثانية',
-                        sermonsData[0][4] || 'الخطبة الثالثة',
-                        sermonsData[0][5] || 'الخطبة الرابعة'
+                if (sermonsData?.[0]?.length >= 6) {
+                    currentSermonHeaders = [
+                        sermonsData[0][2]?.toString().trim() || 'الخطبة الأولى',
+                        sermonsData[0][3]?.toString().trim() || 'الخطبة الثانية',
+                        sermonsData[0][4]?.toString().trim() || 'الخطبة الثالثة',
+                        sermonsData[0][5]?.toString().trim() || 'الخطبة الرابعة'
                     ];
                 }
 
-                // تجميع المساجد
-                const sermonsByMosque = [];
-                
-                if (sermonsData && sermonsData.length > 0) {
-                    // نبدأ من الصف الثاني (بعد العناوين)
-                    const startRow = 1;
-                    
-                    for (let i = startRow; i < sermonsData.length; i++) {
-                        const row = sermonsData[i];
-                        if (!row || row.length < 6) continue;
-
-                        let mosqueName = row[0]?.toString().trim() || 'غير محدد';
-                        const area = row[1]?.toString().trim() || '';
-                        
-                        // تنظيف اسم المسجد
-                        if (mosqueName.includes(' - ') && preacherName) {
-                            const parts = mosqueName.split(' - ');
-                            if (parts[0].includes(preacherName) || parts[0].includes('الشيخ') || parts[0].includes('د/')) {
-                                mosqueName = parts.slice(1).join(' - ');
+                if (!sermonsByMosqueCache) {
+                    const sermonsByMosque = [];
+                    if (sermonsData?.length > 0) {
+                        for (let i = 1; i < sermonsData.length; i++) {
+                            const row = sermonsData[i];
+                            if (!row || row.length < 6) continue;
+                            let mosqueName = row[0]?.toString().trim() || 'غير محدد';
+                            const area = row[1]?.toString().trim() || '';
+                            if (mosqueName.includes(' - ') && preacherName) {
+                                const parts = mosqueName.split(' - ');
+                                if (parts[0].includes(preacherName) || parts[0].includes('الشيخ') || parts[0].includes('د/')) {
+                                    mosqueName = parts.slice(1).join(' - ');
+                                }
                             }
+                            const mosqueDisplay = area ? `${mosqueName} - ${area}` : mosqueName;
+                            const sermons = [2, 3, 4, 5].map((col, idx) => ({
+                                order: idx + 1,
+                                preacher: row[col]?.toString().trim() || ''
+                            }));
+                            sermonsByMosque.push({ name: mosqueDisplay, sermons });
                         }
-                        
-                        const mosqueDisplay = area ? `${mosqueName} - ${area}` : mosqueName;
-                        
-                        const sermons = [2,3,4,5].map((col, idx) => ({
-                            order: idx + 1,
-                            preacher: row[col]?.toString().trim() || ''
-                        }));
-                        
-                        sermonsByMosque.push({
-                            name: mosqueDisplay,
-                            sermons: sermons
-                        });
                     }
+                    sermonsByMosqueCache = sermonsByMosque;
                 }
 
-                // كشف الأخطاء
-                const errors = detectErrors(sermonsByMosque, preacherName);
-
-                // تجميع خطب الخطيب
+                const errors = detectErrors(sermonsByMosqueCache, preacherName);
                 const allSermons = [];
-                sermonsByMosque.forEach(mosque => {
+                sermonsByMosqueCache.forEach(mosque => {
                     mosque.sermons.forEach(sermon => {
                         if (sermon.preacher === preacherName) {
-                            allSermons.push({
-                                order: sermon.order,
-                                mosque: mosque.name,
-                                hasPreacher: true
-                            });
+                            allSermons.push({ order: sermon.order, mosque: mosque.name, hasPreacher: true });
                         }
                     });
                 });
 
-                // ترتيب الخطب
                 const orderedSermons = [];
                 for (let order = 1; order <= 4; order++) {
                     const sermonsInOrder = allSermons.filter(s => s.order === order);
                     if (sermonsInOrder.length > 0) {
                         sermonsInOrder.forEach(s => orderedSermons.push(s));
                     } else {
-                        orderedSermons.push({
-                            order: order,
-                            mosque: null,
-                            hasPreacher: false
-                        });
+                        orderedSermons.push({ order, mosque: null, hasPreacher: false });
                     }
                 }
 
-                displayResults(preacherName, orderedSermons, errors, sermonHeaders);
+                displayResults(preacherName, orderedSermons, errors, currentSermonHeaders, currentSavedStatuses);
 
             } catch (error) {
-                resultsDiv.innerHTML = `<div class="error-message">❌ خطأ: ${error.message}</div>`;
+                resultsDiv.innerHTML = `<div class="result-card p-5 text-center"><i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #dc2626;"></i><h4>حدث خطأ</h4><p class="text-muted">${error.message}</p></div>`;
+                showToast(error.message, true);
             } finally {
                 searchBtn.disabled = false;
-                searchBtn.textContent = 'بحث عن الخطب';
+                searchBtn.innerHTML = '<i class="fas fa-search"></i> بحث عن الخطب';
             }
         }
 
-        function displayResults(preacherName, sermonsList, errors, sermonHeaders) {
+        function displayResults(preacherName, sermonsList, errors, sermonHeaders, savedStatuses) {
             const totalSermons = sermonsList.filter(s => s.hasPreacher).length;
             const totalRest = sermonsList.filter(s => !s.hasPreacher).length;
             const hasErrors = errors.length > 0;
 
-            let resultsHTML = `
-                <div class="preacher-card">
-                    <div class="copy-button-container">
-                        <button class="copy-button" id="mainCopyButton">
-                            <span>📋</span> نسخ الجدول
-                        </button>
-                    </div>
-                    
-                    <div class="preacher-header">
-                        <div class="preacher-name">
-                            <span class="preacher-name-icon">🎙️</span>
-                            ${preacherName}
-                        </div>
-                    </div>
-            `;
-
-            if (hasErrors) {
-                resultsHTML += `
-                    <div class="error-alert">
-                        <div class="error-alert-title">
-                            <span>⚠️</span> خطأ في البيانات
-                        </div>
-                `;
-                
-                errors.forEach(error => {
-                    resultsHTML += `
-                        <div class="error-item">
-                            <span class="error-icon">🔴</span>
-                            <span>مكرر في <strong>${sermonHeaders[error.order - 1]}</strong>:</span>
-                            <span class="error-mosque">${error.mosques.join(' و ')}</span>
-                        </div>
-                    `;
-                });
-                resultsHTML += `</div>`;
-            }
-
-            resultsHTML += `<div class="sermons-table">`;
-
+            let sermonsHTML = '';
             sermonsList.forEach((sermon) => {
-                // ✅ استخدام عنوان العمود بدلاً من النص الثابت
                 const headerText = sermonHeaders[sermon.order - 1];
-                
+                const savedStatus = savedStatuses[sermon.order] || '';
+                const orderNumbers = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة'];
+                const orderIcon = ['fa-1', 'fa-2', 'fa-3', 'fa-4'];
+
                 if (sermon.hasPreacher) {
-                    resultsHTML += `
-                        <div class="sermon-row present">
-                            <div class="sermon-order">${headerText}</div>
-                            <div class="sermon-content">
-                                <span class="sermon-icon">📌</span>
-                                <span class="sermon-mosque">${sermon.mosque}</span>
+                    const options = HAS_MOSQUE_OPTIONS.map(opt => 
+                        `<option value="${opt.value}" ${savedStatus === opt.value ? 'selected' : ''}>${opt.text}</option>`
+                    ).join('');
+                    sermonsHTML += `
+                        <div class="sermon-item">
+                            <div class="sermon-title">
+                                <div class="sermon-badge">
+                                    <i class="fas ${orderIcon[sermon.order - 1]}"></i>
+                                </div>
+                                <div>
+                                    <div class="sermon-name">${headerText}</div>
+                                    <small class="text-muted">الخطبة ${orderNumbers[sermon.order - 1]}</small>
+                                </div>
+                            </div>
+                            <div class="mosque-info">
+                                <i class="fas fa-mosque"></i>
+                                <span class="mosque-name">${sermon.mosque}</span>
+                            </div>
+                            <div class="mt-2">
+                                <select class="form-select-custom w-100 sermon-select" data-order="${sermon.order}">
+                                    ${options}
+                                </select>
                             </div>
                         </div>
                     `;
                 } else {
-                    const restMessage = getRandomRestMessage();
-                    resultsHTML += `
-                        <div class="sermon-row rest">
-                            <div class="sermon-order">${headerText}</div>
-                            <div class="sermon-content">
-                                <div class="rest-badge">
-                                    <span>🌿</span> ${restMessage}
+                    const options = NO_MOSQUE_OPTIONS.map(opt => 
+                        `<option value="${opt.value}" ${savedStatus === opt.value ? 'selected' : ''}>${opt.text}</option>`
+                    ).join('');
+                    sermonsHTML += `
+                        <div class="sermon-item">
+                            <div class="sermon-title">
+                                <div class="sermon-badge">
+                                    <i class="fas ${orderIcon[sermon.order - 1]}"></i>
                                 </div>
+                                <div>
+                                    <div class="sermon-name">${headerText}</div>
+                                    <small class="text-muted">الخطبة ${orderNumbers[sermon.order - 1]}</small>
+                                </div>
+                            </div>
+                            <div class="rest-badge-modern my-2">
+                                <i class="fas fa-coffee"></i> ${getRandomRestMessage()}
+                            </div>
+                            <div class="mt-2">
+                                <select class="form-select-custom w-100 sermon-select" data-order="${sermon.order}">
+                                    ${options}
+                                </select>
                             </div>
                         </div>
                     `;
                 }
             });
 
-            resultsHTML += `</div>`;
+            let errorsHTML = '';
+            if (hasErrors) {
+                errorsHTML = `
+                    <div class="error-alert-modern">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="fas fa-exclamation-triangle" style="color: #dc2626; font-size: 1.5rem;"></i>
+                            <strong style="color: #991b1b;">تنبيه: توجد أخطاء في البيانات</strong>
+                        </div>
+                `;
+                errors.forEach(error => {
+                    errorsHTML += `
+                        <div class="d-flex align-items-center gap-2 mb-2 p-2 bg-white rounded">
+                            <i class="fas fa-circle" style="color: #dc2626; font-size: 0.6rem;"></i>
+                            <span>مكرر في <strong>${sermonHeaders[error.order - 1]}</strong>:</span>
+                            <span class="badge bg-danger">${error.mosques.join(' و ')}</span>
+                        </div>
+                    `;
+                });
+                errorsHTML += `</div>`;
+            }
 
-            resultsHTML += `
-                <div class="quick-stats">
-                    <div class="stat-item">
-                        <span class="stat-icon">📊</span>
-                        <span><span class="stat-value">${totalSermons}</span> خطب</span>
+            const resultsHTML = `
+                <div class="result-card">
+                    <div class="preacher-header">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div class="preacher-name">
+                                <i class="fas fa-user-circle"></i>
+                                ${preacherName}
+                            </div>
+                            <button class="copy-btn" id="mainCopyButton">
+                                <i class="fas fa-copy"></i> نسخ الجدول
+                            </button>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🌿</span>
-                        <span><span class="stat-value">${totalRest}</span> إجازات</span>
+                    
+                    ${errorsHTML}
+                    
+                    <div class="sermons-container">
+                        ${sermonsHTML}
                     </div>
-                    ${hasErrors ? `
-                    <div class="stat-item" style="color:#dc2626">
-                        <span class="stat-icon">⚠️</span>
-                        <span><span class="stat-value">${errors.length}</span> أخطاء</span>
+                    
+                    <div class="stats-section">
+                        <div class="stat-card">
+                            <i class="fas fa-chalkboard-user" style="color: #667eea;"></i>
+                            <span><span class="stat-number">${totalSermons}</span> خطب</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-coffee" style="color: #f59e0b;"></i>
+                            <span><span class="stat-number">${totalRest}</span> إجازات</span>
+                        </div>
+                        ${hasErrors ? `
+                        <div class="stat-card">
+                            <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+                            <span><span class="stat-number">${errors.length}</span> أخطاء</span>
+                        </div>
+                        ` : ''}
                     </div>
-                    ` : ''}
+                    
+                    <div class="text-center p-3 border-top">
+                        <small class="text-muted">
+                            <i class="fas fa-quote-right"></i> وَرَبُّكَ يَخْلُقُ مَا يَشَاءُ وَيَخْتَارُ
+                        </small>
+                    </div>
                 </div>
-                <div class="footer-quote">
-                    "وَرَبُّكَ يَخْلُقُ مَا يَشَاءُ وَيَخْتَارُ" 🌙
-                </div>
-            </div>`;
+            `;
 
             resultsDiv.innerHTML = resultsHTML;
 
-            // ربط زر النسخ بعد إضافة النتائج
+            document.querySelectorAll('.sermon-select').forEach(select => {
+                select.addEventListener('change', async (e) => {
+                    const target = e.target;
+                    const order = parseInt(target.getAttribute('data-order'));
+                    const newStatus = target.value;
+                    if (!newStatus) return;
+                    
+                    target.disabled = true;
+                    target.style.opacity = '0.7';
+                    
+                    try {
+                        const result = await saveSermonStatus(currentNationalId, order, newStatus);
+                        if (result.success) {
+                            showToast('تم حفظ الحالة بنجاح');
+                            currentSavedStatuses[order] = newStatus;
+                            const row = target.closest('.sermon-item');
+                            row.style.backgroundColor = '#f0fdf4';
+                            setTimeout(() => row.style.backgroundColor = '', 500);
+                        } else {
+                            showToast(result.error || 'حدث خطأ في الحفظ', true);
+                            target.value = currentSavedStatuses[order] || '';
+                        }
+                    } catch (error) {
+                        showToast('خطأ في الاتصال بالخادم', true);
+                        target.value = currentSavedStatuses[order] || '';
+                    } finally {
+                        target.disabled = false;
+                        target.style.opacity = '1';
+                    }
+                });
+            });
+
             const copyBtn = document.getElementById('mainCopyButton');
             if (copyBtn) {
                 copyBtn.onclick = function() {
-                    const content = createCopyContent(preacherName, sermonsList, errors, sermonHeaders);
-                    copyToClipboard(content, this);
+                    let content = `🎙️ الشيخ ${preacherName}\n📋 جدول الخطب:\n${'─'.repeat(30)}\n`;
+                    sermonsList.forEach((sermon) => {
+                        const headerText = sermonHeaders[sermon.order - 1];
+                        const savedStatus = currentSavedStatuses[sermon.order] || '';
+                        if (sermon.hasPreacher) {
+                            content += `${headerText}: ${sermon.mosque}`;
+                            if (savedStatus) content += ` (${savedStatus === 'تأكيد الحضور' ? '✅ مؤكد' : '❌ معتذر'})`;
+                            content += `\n`;
+                        } else {
+                            content += `${headerText}: ${getRandomRestMessage()}`;
+                            if (savedStatus) content += ` (${savedStatus === 'مستعد للخطبة' ? '🟢 مستعد' : '❌ معتذر'})`;
+                            content += `\n`;
+                        }
+                    });
+                    if (errors.length > 0) {
+                        content += `\n⚠️ تنبيه: يوجد خطأ!\n`;
+                        errors.forEach(error => {
+                            content += `- مكرر في ${sermonHeaders[error.order - 1]}: ${error.mosques.join(' و ')}\n`;
+                        });
+                    }
+                    content += `${'─'.repeat(30)}\n📅 ${new Date().toLocaleDateString('ar-EG')}\n🔗 نظام خطباء التبين`;
+                    
+                    if (navigator.clipboard?.writeText) {
+                        navigator.clipboard.writeText(content).then(() => {
+                            this.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+                            this.classList.add('copied');
+                            showToast('تم نسخ الجدول بنجاح');
+                            setTimeout(() => {
+                                this.innerHTML = '<i class="fas fa-copy"></i> نسخ الجدول';
+                                this.classList.remove('copied');
+                            }, 2000);
+                        }).catch(() => showToast('فشل النسخ', true));
+                    } else {
+                        showToast('المتصفح لا يدعم النسخ', true);
+                    }
                 };
             }
         }
 
-        // ربط زر البحث
+        fetchAllData();
         searchBtn.addEventListener('click', performSearch);
-        
-        // ربط زر Enter
         nationalIdInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') performSearch();
         });
     </script>
 </body>
+
 </html>
