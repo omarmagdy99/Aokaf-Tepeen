@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المساجد - خطباء التبين</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .navbar-brand i {
+            color: #f59e0b;
+        }
+
+        .nav-link-custom {
+            color: #cbd5e1 !important;
+            font-weight: 500;
+            padding: 8px 20px !important;
+            border-radius: 12px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            color: #f59e0b !important;
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            padding: 8px 20px;
+            border-radius: 12px;
+            color: #fca5a5;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .stat-badge {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .stat-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-badge.active {
+            border-color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-total {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .stat-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .stat-needy {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stat-apologized {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stat-duplicate {
+            background: #f3e8ff;
+            color: #6b21a5;
+        }
+
+        .stat-pending {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .table-custom {
+            margin-bottom: 0;
+        }
+
+        .table-custom th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .row-confirmed {
+            background-color: #f0fdf4;
+        }
+
+        .row-needy {
+            background-color: #fffbeb;
+        }
+
+        .row-apologized {
+            background-color: #fef2f2;
+        }
+
+        .row-duplicate {
+            background-color: #faf5ff;
+        }
+
+        .row-pending {
+            background-color: #eef2ff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-needy {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-apologized {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-duplicate {
+            background: #f3e8ff;
+            color: #6b21a5;
+        }
+
+        .status-pending {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* مودال اختيار الخطيب */
+        .modal-preacher-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-preacher-item:hover {
+            background-color: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        .preacher-green {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .preacher-yellow {
+            color: #d97706;
+            font-weight: 500;
+        }
+
+        .preacher-red {
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        .search-box {
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            width: 100%;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .search-box:focus {
+            border-color: #f59e0b;
+            outline: none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-custom {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                max-height: 400px;
+            }
+
+            .stat-badge {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-chalkboard-user"></i> خطباء التبين</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item"><a class="nav-link-custom" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link-custom" href="mosques.html"><i class="fas fa-mosque"></i> إدارة المساجد</a></li>
+                    <li class="nav-item"><a class="nav-link-custom active" href="preachers.html"><i class="fas fa-users"></i> إدارة الخطباء</a></li>
+                    <li class="nav-item"><a class="nav-link-custom" href="admins.html"><i class="fas fa-users-cog"></i> إدارة المشرفين</a></li>
+                </ul>
+                <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+            </div>
+        </div>
+    </nav> -->
+
+    <!-- ===== شريط التنقل ===== -->
+    <div id="navbar-placeholder"></div>
+
+    <script>
+        // تحميل شريط التنقل
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('خطأ في تحميل شريط التنقل:', error);
+                // في حال عدم التحميل، نعرض نسخة احتياطية
+                document.getElementById('navbar-placeholder').innerHTML = `
+                <nav class="navbar navbar-custom navbar-expand-lg">
+                    <div class="container">
+                        <a class="navbar-brand" href="dashboard.html"><i class="fas fa-chalkboard-user"></i> خطباء التبين</a>
+                        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ms-auto me-3">
+                                <li class="nav-item"><a class="nav-link-custom" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="mosques.html"><i class="fas fa-mosque"></i> المساجد</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="preachers.html"><i class="fas fa-users"></i> الخطباء</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="admins.html"><i class="fas fa-users-cog"></i> المشرفين</a></li>
+                            </ul>
+                            <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                        </div>
+                    </div>
+                </nav>
+                <style>${getNavbarStyles()}</style>
+            `;
+            });
+
+        function getNavbarStyles() {
+            return `
+            .navbar-custom { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+            .navbar-brand { font-weight: 800; font-size: 1.4rem; background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+            .navbar-brand i { color: #f59e0b; }
+            .custom-toggler { border: 1px solid rgba(245, 158, 11, 0.5); background: transparent; padding: 8px 12px; border-radius: 8px; }
+            .custom-toggler .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(245, 158, 11, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+            .nav-link-custom { color: #cbd5e1 !important; font-weight: 500; padding: 8px 20px !important; border-radius: 12px; transition: all 0.3s; text-decoration: none; }
+            .nav-link-custom:hover { color: #f59e0b !important; background: rgba(245, 158, 11, 0.1); }
+            .nav-link-custom.active { color: #f59e0b !important; background: rgba(245, 158, 11, 0.15); }
+            .btn-logout { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); padding: 8px 20px; border-radius: 12px; color: #fca5a5; font-weight: 500; transition: all 0.3s; cursor: pointer; }
+            .btn-logout:hover { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; transform: translateY(-2px); }
+            @media (max-width: 768px) { .navbar-brand { font-size: 1.1rem; } .nav-link-custom { padding: 10px 15px !important; text-align: center; } .btn-logout { margin: 10px 15px; width: calc(100% - 30px); text-align: center; } }
+        `;
+        }
+    </script>
+    <div class="container">
+        <div id="mainContent"></div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-mosque"></i> نظام إدارة خطباء التبين - إدارة المساجد
+    </div>
+
+    <!-- مودال اختيار الخطيب -->
+    <div class="modal fade" id="preacherModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-edit"></i> تعيين خطيب جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" id="preacherSearch" class="search-box" placeholder="🔍 بحث عن خطيب...">
+                    </div>
+                    <div id="preacherListContainer" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ========================================
+        // التكوينات
+        // ========================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxGfd9nD_Iiy4Mhv-Sxy9kSzBCQFpr40FVtnmap5aESTqJsZZcDjo5wLNNfOZ5TX9Y2Gg/exec';
+
+        let currentSermonOrder = 1;
+        let sermonNames = [];
+        let allMosques = [];
+        let availablePreachers = [];
+        let currentFilter = 'all';
+        let currentStats = {};
+        let isLoading = false;
+
+        let selectedMosqueRow = null;
+        let selectedMosqueName = '';
+
+        // ========================================
+        // التحقق من تسجيل الدخول
+        // ========================================
+        function checkAuth() {
+            if (localStorage.getItem('adminLoggedIn') !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // ========================================
+        // جلب أسماء الخطبة
+        // ========================================
+        async function fetchSermonNames() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                if (data.success && data.sermons && data.sermons[0]) {
+                    const row = data.sermons[0];
+                    sermonNames = [
+                        row[2]?.toString().trim() || "الخطبة الأولى",
+                        row[3]?.toString().trim() || "الخطبة الثانية",
+                        row[4]?.toString().trim() || "الخطبة الثالثة",
+                        row[5]?.toString().trim() || "الخطبة الرابعة"
+                    ];
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // ========================================
+        // جلب جميع المساجد
+        // ========================================
+        async function fetchAllMosques() {
+            showLoading(true);
+            try {
+                const url = `${API_URL}?action=getAllMosques&sermonOrder=${currentSermonOrder}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                if (result.success) {
+                    allMosques = result.data.allMosques || [];
+                    availablePreachers = result.data.availablePreachers || [];
+                    currentStats = result.data.stats || {};
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error(error);
+                return false;
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ========================================
+        // تعيين خطيب
+        // ========================================
+        async function assignPreacher(mosqueRow, preacherName) {
+            try {
+                const url = `${API_URL}?action=assignPreacher&mosqueRow=${mosqueRow}&sermonOrder=${currentSermonOrder}&preacherName=${encodeURIComponent(preacherName)}&adminName=${encodeURIComponent(localStorage.getItem('adminUsername') || 'المشرف')}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                return { success: false, message: error.message };
+            }
+        }
+
+        // ========================================
+        // تحديث البيانات (بدون ريفريش)
+        // ========================================
+        async function refreshData() {
+            await fetchAllMosques();
+            renderTable();
+            updateStatsDisplay();
+        }
+
+        // ========================================
+        // تغيير الخطبة
+        // ========================================
+        async function changeSermon(order) {
+            currentSermonOrder = order;
+            currentFilter = 'all';
+            await refreshData();
+        }
+
+        // ========================================
+        // فلتر المساجد
+        // ========================================
+        function getFilteredMosques() {
+            if (currentFilter === 'all') return allMosques;
+            return allMosques.filter(m => m.mosqueStatus === currentFilter);
+        }
+
+        // ========================================
+        // عرض الإحصائيات
+        // ========================================
+        function updateStatsDisplay() {
+            const statsHtml = `
+                <div class="stats-row">
+                    <div class="stat-badge stat-total ${currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">📊 الكل: ${currentStats.total || 0}</div>
+                    <div class="stat-badge stat-confirmed ${currentFilter === 'confirmed' ? 'active' : ''}" onclick="setFilter('confirmed')">✅ مؤكد: ${currentStats.confirmed || 0}</div>
+                    <div class="stat-badge stat-needy ${currentFilter === 'needy' ? 'active' : ''}" onclick="setFilter('needy')">⚠️ بحاجة خطيب: ${currentStats.needy || 0}</div>
+                    <div class="stat-badge stat-apologized ${currentFilter === 'apologized' ? 'active' : ''}" onclick="setFilter('apologized')">❌ معتذر: ${currentStats.apologized || 0}</div>
+                    <div class="stat-badge stat-duplicate ${currentFilter === 'duplicate' ? 'active' : ''}" onclick="setFilter('duplicate')">🔄 خطيب مكرر: ${currentStats.duplicate || 0}</div>
+                    <div class="stat-badge stat-pending ${currentFilter === 'pending' ? 'active' : ''}" onclick="setFilter('pending')">⏳ قيد الانتظار: ${currentStats.pending || 0}</div>
+                </div>
+            `;
+            const statsPanel = document.getElementById('statsPanel');
+            if (statsPanel) statsPanel.innerHTML = statsHtml;
+        }
+
+        window.setFilter = function (filter) {
+            currentFilter = filter;
+            renderTable();
+            updateStatsDisplay();
+
+            // تحديث الفلاتر السريعة
+            document.querySelectorAll('.filter-group .btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.filter-group .btn-outline-${filter === 'all' ? 'secondary' : filter === 'confirmed' ? 'success' : filter === 'needy' ? 'warning' : filter === 'apologized' ? 'danger' : filter === 'duplicate' ? 'purple' : 'info'}`);
+            if (activeBtn) activeBtn.classList.add('active');
+        };
+
+        // ========================================
+        // فتح مودال اختيار الخطيب
+        // ========================================
+        window.openPreacherModal = function (mosqueRow, mosqueName) {
+            selectedMosqueRow = mosqueRow;
+            selectedMosqueName = mosqueName;
+
+            // عرض المودال
+            const modal = new bootstrap.Modal(document.getElementById('preacherModal'));
+            modal.show();
+
+            // تحديث عنوان المودال
+            document.querySelector('#preacherModal .modal-title').innerHTML = `<i class="fas fa-user-edit"></i> تعيين خطيب - ${mosqueName}`;
+
+            // عرض قائمة الخطباء
+            renderPreacherList('');
+
+            // إضافة مستمع للبحث
+            const searchInput = document.getElementById('preacherSearch');
+            searchInput.value = '';
+            searchInput.oninput = (e) => renderPreacherList(e.target.value);
+        };
+
+        // ========================================
+        // عرض قائمة الخطباء في المودال
+        // ========================================
+        function renderPreacherList(searchTerm) {
+            const container = document.getElementById('preacherListContainer');
+            if (!container) return;
+
+            let filteredPreachers = [...availablePreachers];
+            if (searchTerm && searchTerm.trim() !== '') {
+                const term = searchTerm.trim().toLowerCase();
+                filteredPreachers = filteredPreachers.filter(p => p.name.toLowerCase().includes(term));
+            }
+
+            if (filteredPreachers.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-4">لا يوجد خطباء متاحون</div>';
+                return;
+            }
+
+            const greenItems = [];
+            const yellowItems = [];
+            const redItems = [];
+
+            filteredPreachers.forEach(preacher => {
+                let colorClass = '', icon = '', statusText = '';
+                if (preacher.color === 'green') {
+                    colorClass = 'preacher-green';
+                    icon = '🟢';
+                    statusText = 'مستعد ومتفرغ';
+                    greenItems.push({ name: preacher.name, colorClass, icon, statusText, color: preacher.color });
+                } else if (preacher.color === 'yellow') {
+                    colorClass = 'preacher-yellow';
+                    icon = '🟡';
+                    statusText = 'لم يحدد حالته';
+                    yellowItems.push({ name: preacher.name, colorClass, icon, statusText, color: preacher.color });
+                } else {
+                    colorClass = 'preacher-red';
+                    icon = '🔴';
+                    statusText = 'معتذر (للتعيين مع تحذير)';
+                    redItems.push({ name: preacher.name, colorClass, icon, statusText, color: preacher.color });
+                }
+            });
+
+            let html = '';
+
+            if (greenItems.length) {
+                html += '<div class="dropdown-header text-success fw-bold">🟢 مستعدون ومتفرغون</div>';
+                greenItems.forEach(p => {
+                    html += `<div class="modal-preacher-item ${p.colorClass}" onclick="selectPreacherFromModal('${escapeHtml(p.name)}', '${p.color}')">${p.icon} ${escapeHtml(p.name)} <small class="text-muted">- ${p.statusText}</small></div>`;
+                });
+            }
+
+            if (yellowItems.length) {
+                if (greenItems.length) html += '<div class="dropdown-divider my-2"></div>';
+                html += '<div class="dropdown-header text-warning fw-bold">🟡 لم يحددوا حالتهم</div>';
+                yellowItems.forEach(p => {
+                    html += `<div class="modal-preacher-item ${p.colorClass}" onclick="selectPreacherFromModal('${escapeHtml(p.name)}', '${p.color}')">${p.icon} ${escapeHtml(p.name)} <small class="text-muted">- ${p.statusText}</small></div>`;
+                });
+            }
+
+            if (redItems.length) {
+                if (greenItems.length || yellowItems.length) html += '<div class="dropdown-divider my-2"></div>';
+                html += '<div class="dropdown-header text-danger fw-bold">🔴 معتذرون</div>';
+                redItems.forEach(p => {
+                    html += `<div class="modal-preacher-item ${p.colorClass}" onclick="selectPreacherFromModal('${escapeHtml(p.name)}', '${p.color}')">${p.icon} ${escapeHtml(p.name)} <small class="text-muted">- ${p.statusText}</small></div>`;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        // ========================================
+        // اختيار خطيب من المودال
+        // ========================================
+        window.selectPreacherFromModal = async function (preacherName, color) {
+            if (color === 'red') {
+                if (!confirm(`⚠️ تحذير: "${preacherName}" معتذر.\n\nهل تريد تعيينه رغم ذلك؟`)) return;
+            }
+
+            // إغلاق المودال
+            const modal = bootstrap.Modal.getInstance(document.getElementById('preacherModal'));
+            modal.hide();
+
+            showLoading(true);
+            const result = await assignPreacher(selectedMosqueRow, preacherName);
+            showLoading(false);
+
+            if (result.success) {
+                showToast(`✅ تم تعيين "${preacherName}" بنجاح`, false);
+                await refreshData();
+            } else {
+                showToast(`❌ خطأ: ${result.message}`, true);
+            }
+        };
+
+        // ========================================
+        // عرض الجدول
+        // ========================================
+        function renderTable() {
+            const filteredMosques = getFilteredMosques();
+            const tableBody = document.getElementById('tableBody');
+            if (!tableBody) return;
+
+            if (filteredMosques.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-5">لا توجد مساجد تطابق الفلتر المحدد</td></tr>`;
+                return;
+            }
+
+            let tableRows = '';
+            filteredMosques.forEach((mosque, idx) => {
+                tableRows += `
+                    <tr class="row-${mosque.mosqueStatus}">
+                        <td class="text-center">${idx + 1}</td>
+                        <td><strong>${escapeHtml(mosque.mosque)}</strong></td>
+                        <td>${escapeHtml(mosque.area) || '---'}</td>
+                        <td>${mosque.preacher ? escapeHtml(mosque.preacher) : '<span class="text-muted">(لا يوجد)</span>'}</td>
+                        <td><span class="status-badge status-${mosque.mosqueStatus}">${getStatusText(mosque)}</span></td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-primary" onclick="openPreacherModal(${mosque.rowIndex}, '${escapeHtml(mosque.mosque)}')">
+                                <i class="fas fa-exchange-alt"></i> تغيير
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tableBody.innerHTML = tableRows;
+        }
+
+        function getStatusText(mosque) {
+            switch (mosque.mosqueStatus) {
+                case 'confirmed': return '✅ مؤكد الحضور';
+                case 'needy': return '⚠️ بحاجة لخطيب';
+                case 'apologized': return '❌ الخطيب معتذر';
+                case 'duplicate': return '🔄 خطيب مكرر';
+                case 'pending': return '⏳ في انتظار التأكيد';
+                default: return mosque.statusReason || '---';
+            }
+        }
+
+        // ========================================
+        // تحميل الواجهة الرئيسية
+        // ========================================
+        async function loadPage() {
+            await fetchSermonNames();
+            await fetchAllMosques();
+
+            const sermonFilter = sermonNames.map((name, idx) => `
+                <button class="dropdown-item ${currentSermonOrder === idx + 1 ? 'active' : ''}" onclick="changeSermon(${idx + 1})">
+                    ${idx === 0 ? 'الخطبة الأولى' : idx === 1 ? 'الخطبة الثانية' : idx === 2 ? 'الخطبة الثالثة' : 'الخطبة الرابعة'}: ${name}
+                </button>
+            `).join('');
+
+            const currentTitle = currentSermonOrder === 1 ? 'الخطبة الأولى' : currentSermonOrder === 2 ? 'الخطبة الثانية' : currentSermonOrder === 3 ? 'الخطبة الثالثة' : 'الخطبة الرابعة';
+            const currentName = sermonNames[currentSermonOrder - 1] || currentTitle;
+
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content-card">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                        <h4 class="mb-0"><i class="fas fa-mosque"></i> إدارة المساجد</h4>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-calendar-alt"></i> ${currentTitle}: ${currentName}
+                            </button>
+                            <ul class="dropdown-menu">${sermonFilter}</ul>
+                        </div>
+                    </div>
+                    
+                    <div id="statsPanel"></div>
+                    
+                    <div class="filter-group">
+                        <button class="btn btn-sm btn-outline-secondary ${currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">الكل</button>
+                        <button class="btn btn-sm btn-outline-success ${currentFilter === 'confirmed' ? 'active' : ''}" onclick="setFilter('confirmed')">✅ مؤكد</button>
+                        <button class="btn btn-sm btn-outline-warning ${currentFilter === 'needy' ? 'active' : ''}" onclick="setFilter('needy')">⚠️ بحاجة خطيب</button>
+                        <button class="btn btn-sm btn-outline-danger ${currentFilter === 'apologized' ? 'active' : ''}" onclick="setFilter('apologized')">❌ معتذر</button>
+                        <button class="btn btn-sm btn-outline-purple ${currentFilter === 'duplicate' ? 'active' : ''}" onclick="setFilter('duplicate')">🔄 خطيب مكرر</button>
+                        <button class="btn btn-sm btn-outline-info ${currentFilter === 'pending' ? 'active' : ''}" onclick="setFilter('pending')">⏳ قيد الانتظار</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="table table-bordered table-custom">
+                            <thead>
+                                <tr><th width="50">#</th><th>المسجد</th><th width="150">المنطقة</th><th width="200">الخطيب الحالي</th><th width="130">الحالة</th><th width="120">الإجراء</th></tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                         </table>
+                    </div>
+                </div>
+            `;
+
+            updateStatsDisplay();
+            renderTable();
+        }
+
+        function showToast(message, isError) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-custom';
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
+            toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:50px;z-index:10000;';
+            if (isError) toast.style.background = '#dc2626';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showLoading(show) {
+            if (show && !isLoading) {
+                isLoading = true;
+                const overlay = document.createElement('div');
+                overlay.id = 'loadingOverlay';
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="spinner-custom"></div>';
+                document.body.appendChild(overlay);
+            } else if (!show && isLoading) {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) overlay.remove();
+                isLoading = false;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) return;
+            loadPage();
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        });
+    </script>
+</body>
+
+</html>

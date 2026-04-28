@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - خطباء التبين</title>
+
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .navbar-brand i {
+            color: #f59e0b;
+            background: none;
+        }
+
+        .nav-link-custom {
+            color: #cbd5e1 !important;
+            font-weight: 500;
+            padding: 8px 20px !important;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .nav-link-custom:hover {
+            color: #f59e0b !important;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .nav-link-custom.active {
+            color: #f59e0b !important;
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            padding: 8px 20px;
+            border-radius: 12px;
+            color: #fca5a5;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        /* بطاقات الإحصائيات */
+        .stats-container {
+            padding: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            height: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #f59e0b20 0%, #ea580c20 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+        }
+
+        .stat-icon i {
+            font-size: 32px;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-number {
+            font-size: 2.7rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .details-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            border-right: 4px solid #f59e0b;
+            padding-right: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .table-custom th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .spinner-custom {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .mosque-needy {
+            background: #fef2f2;
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <!-- <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-chalkboard-user"></i> خطباء التبين</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item"><a class="nav-link-custom" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link-custom" href="mosques.html"><i class="fas fa-mosque"></i> إدارة المساجد</a></li>
+                    <li class="nav-item"><a class="nav-link-custom active" href="preachers.html"><i class="fas fa-users"></i> إدارة الخطباء</a></li>
+                    <li class="nav-item"><a class="nav-link-custom" href="admins.html"><i class="fas fa-users-cog"></i> إدارة المشرفين</a></li>
+                </ul>
+                <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+            </div>
+        </div>
+    </nav> -->
+
+    <!-- ===== شريط التنقل ===== -->
+    <div id="navbar-placeholder"></div>
+
+    <script>
+        // تحميل شريط التنقل
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('خطأ في تحميل شريط التنقل:', error);
+                // في حال عدم التحميل، نعرض نسخة احتياطية
+                document.getElementById('navbar-placeholder').innerHTML = `
+                <nav class="navbar navbar-custom navbar-expand-lg">
+                    <div class="container">
+                        <a class="navbar-brand" href="dashboard.html"><i class="fas fa-chalkboard-user"></i> خطباء التبين</a>
+                        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ms-auto me-3">
+                                <li class="nav-item"><a class="nav-link-custom" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="mosques.html"><i class="fas fa-mosque"></i> المساجد</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="preachers.html"><i class="fas fa-users"></i> الخطباء</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="admins.html"><i class="fas fa-users-cog"></i> المشرفين</a></li>
+                            </ul>
+                            <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                        </div>
+                    </div>
+                </nav>
+                <style>${getNavbarStyles()}</style>
+            `;
+            });
+
+        function getNavbarStyles() {
+            return `
+            .navbar-custom { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+            .navbar-brand { font-weight: 800; font-size: 1.4rem; background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+            .navbar-brand i { color: #f59e0b; }
+            .custom-toggler { border: 1px solid rgba(245, 158, 11, 0.5); background: transparent; padding: 8px 12px; border-radius: 8px; }
+            .custom-toggler .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(245, 158, 11, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+            .nav-link-custom { color: #cbd5e1 !important; font-weight: 500; padding: 8px 20px !important; border-radius: 12px; transition: all 0.3s; text-decoration: none; }
+            .nav-link-custom:hover { color: #f59e0b !important; background: rgba(245, 158, 11, 0.1); }
+            .nav-link-custom.active { color: #f59e0b !important; background: rgba(245, 158, 11, 0.15); }
+            .btn-logout { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); padding: 8px 20px; border-radius: 12px; color: #fca5a5; font-weight: 500; transition: all 0.3s; cursor: pointer; }
+            .btn-logout:hover { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; transform: translateY(-2px); }
+            @media (max-width: 768px) { .navbar-brand { font-size: 1.1rem; } .nav-link-custom { padding: 10px 15px !important; text-align: center; } .btn-logout { margin: 10px 15px; width: calc(100% - 30px); text-align: center; } }
+        `;
+        }
+    </script>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-custom"></div>
+            <p class="mt-3 text-muted">جاري تحميل البيانات...</p>
+        </div>
+
+        <div id="dashboardContent" style="display: none;"></div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-mosque"></i> نظام إدارة خطباء التبين - لوحة تحكم المشرفين
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ========================================
+        // تكوين API
+        // ========================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxGfd9nD_Iiy4Mhv-Sxy9kSzBCQFpr40FVtnmap5aESTqJsZZcDjo5wLNNfOZ5TX9Y2Gg/exec';
+
+        // ========================================
+        // التحقق من تسجيل الدخول
+        // ========================================
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('adminLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // ========================================
+        // تسجيل الخروج
+        // ========================================
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            localStorage.removeItem('adminRole');
+            window.location.href = 'login.html';
+        }
+
+        // ========================================
+        // جلب البيانات من API
+        // ========================================
+        async function fetchData() {
+            try {
+                const response = await fetch(API_URL);
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('خطأ:', error);
+                return null;
+            }
+        }
+
+        // ========================================
+        // عرض لوحة التحكم
+        // ========================================
+        async function loadDashboard() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
+
+            const data = await fetchData();
+
+            if (!data || !data.success) {
+                document.getElementById('dashboardContent').innerHTML = `
+                    <div class="alert alert-danger text-center mt-4">
+                        <i class="fas fa-exclamation-triangle"></i> خطأ في تحميل البيانات
+                    </div>
+                `;
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                return;
+            }
+
+            const preachers = data.preachers || [];
+            const sermons = data.sermons || [];
+
+            // إحصائيات الخطباء
+            let totalPreachers = 0, confirmedCount = 0, apologizedCount = 0, readyCount = 0, pendingCount = 0;
+
+            for (let i = 1; i < preachers.length; i++) {
+                const row = preachers[i];
+                if (row && row[1] && row[1].toString().trim() !== "") {
+                    totalPreachers++;
+                    const statuses = [row[2], row[3], row[4], row[5]].map(s => s?.toString().trim() || "");
+
+                    if (statuses.some(s => s === "تأكيد الحضور")) confirmedCount++;
+                    if (statuses.some(s => s === "معتذر")) apologizedCount++;
+                    if (statuses.some(s => s === "مستعد للخطبة")) readyCount++;
+                    if (statuses.every(s => !s)) pendingCount++;
+                }
+            }
+
+            // إحصائيات المساجد
+            let totalMosques = 0, needyMosques = [];
+
+            for (let i = 1; i < sermons.length; i++) {
+                const row = sermons[i];
+                if (row && row[0] && row[0].toString().trim() !== "") {
+                    totalMosques++;
+                    const preachersInMosque = [row[2], row[3], row[4], row[5]].map(p => p?.toString().trim() || "");
+                    const hasAnyPreacher = preachersInMosque.some(p => p);
+
+                    if (!hasAnyPreacher) {
+                        needyMosques.push({ name: row[1] ? `${row[0]} - ${row[1]}` : row[0] });
+                    }
+                }
+            }
+
+            // أسماء الخطبة
+            let sermonNames = ["الخطبة الأولى", "الخطبة الثانية", "الخطبة الثالثة", "الخطبة الرابعة"];
+            if (sermons[0] && sermons[0].length >= 6) {
+                sermonNames = [sermons[0][2], sermons[0][3], sermons[0][4], sermons[0][5]].map(s => s?.toString().trim() || "");
+            }
+
+            const adminName = localStorage.getItem('adminUsername') || 'المشرف';
+            const currentDate = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            document.getElementById('dashboardContent').innerHTML = `
+                <div class="stats-container">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                        <div>
+                            <h3>مرحباً، <span style="color: #f59e0b;">${adminName}</span></h3>
+                            <p class="text-muted">${currentDate}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-number">${totalPreachers}</div><div class="stat-label">إجمالي الخطباء</div></div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-number">${confirmedCount}</div><div class="stat-label">مؤكدين الحضور</div></div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card"><div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                            <div class="stat-number">${apologizedCount}</div><div class="stat-label">معتذرين</div></div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card"><div class="stat-icon"><i class="fas fa-mosque"></i></div>
+                            <div class="stat-number">${totalMosques}</div><div class="stat-label">إجمالي المساجد</div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="stat-card"><div class="stat-icon"><i class="fas fa-user-plus"></i></div>
+                            <div class="stat-number">${readyCount}</div><div class="stat-label">مستعدين للخطابة</div></div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-number">${pendingCount}</div><div class="stat-label">لم يردوا بعد</div></div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="stat-card ${needyMosques.length > 0 ? 'mosque-needy' : ''}">
+                                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="stat-number">${needyMosques.length}</div>
+                                <div class="stat-label">مساجد محتاجة لخطباء</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${needyMosques.length > 0 ? `
+                    <div class="details-card">
+                        <div class="details-title"><i class="fas fa-bell"></i> المساجد المحتاجة لخطباء</div>
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead><tr><th>#</th><th>المسجد</th><th>الحالة</th></tr></thead>
+                                <tbody>${needyMosques.map((m, idx) => `<tr><td>${idx + 1}</td><td>${m.name}</td><td><span class="status-badge status-pending"><i class="fas fa-clock"></i> بحاجة لخطيب</span></td></tr>`).join('')}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="details-card">
+                        <div class="details-title"><i class="fas fa-calendar-alt"></i> خطب الجمعة القادمة</div>
+                        <div class="row">
+                            ${sermonNames.map((name, idx) => `
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <div class="p-3 bg-light rounded text-center">
+                                        <i class="fas fa-chalkboard-user mb-2" style="color: #f59e0b; font-size: 1.5rem;"></i>
+                                        <div class="fw-bold">الخطبة ${idx === 0 ? 'الأولى' : idx === 1 ? 'الثانية' : idx === 2 ? 'الثالثة' : 'الرابعة'}</div>
+                                        <small class="text-muted">${name}</small>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+        }
+
+        // ========================================
+        // تهيئة الصفحة
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) return;
+            loadDashboard();
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        });
+    </script>
+</body>
+
+</html>

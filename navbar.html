@@ -1,0 +1,195 @@
+<!-- ======================================== -->
+<!-- شريط التنقل الموحد - نسخ هذا الكود بعد <body> مباشرة -->
+<!-- ======================================== -->
+
+<nav class="navbar navbar-custom navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="dashboard.html">
+            <i class="fas fa-chalkboard-user"></i> خطباء التبين
+        </a>
+        
+        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item">
+                    <a class="nav-link-custom" href="dashboard.html" id="navDashboard">
+                        <i class="fas fa-tachometer-alt"></i> الرئيسية
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-custom" href="mosques.html" id="navMosques">
+                        <i class="fas fa-mosque"></i> المساجد
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-custom" href="preachers.html" id="navPreachers">
+                        <i class="fas fa-users"></i> الخطباء
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-custom" href="admins.html" id="navAdmins">
+                        <i class="fas fa-users-cog"></i> المشرفين
+                    </a>
+                </li>
+            </ul>
+            <button id="logoutBtn" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .navbar-custom {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 12px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .navbar-brand {
+        font-weight: 800;
+        font-size: 1.4rem;
+        background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-decoration: none;
+    }
+    
+    .navbar-brand i {
+        color: #f59e0b;
+        background: none;
+    }
+    
+    /* تحسين شكل زر التوجيل في الموبايل */
+    .custom-toggler {
+        border: 1px solid rgba(245, 158, 11, 0.5);
+        background: transparent;
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+    
+    .custom-toggler:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+    }
+    
+    .custom-toggler .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(245, 158, 11, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    
+    .nav-link-custom {
+        color: #cbd5e1 !important;
+        font-weight: 500;
+        padding: 8px 20px !important;
+        border-radius: 12px;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.95rem;
+    }
+    
+    .nav-link-custom:hover {
+        color: #f59e0b !important;
+        background: rgba(245, 158, 11, 0.1);
+    }
+    
+    .nav-link-custom.active {
+        color: #f59e0b !important;
+        background: rgba(245, 158, 11, 0.15);
+    }
+    
+    .btn-logout {
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        padding: 8px 20px;
+        border-radius: 12px;
+        color: #fca5a5;
+        font-weight: 500;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .btn-logout:hover {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* تحسينات للموبايل */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.1rem;
+        }
+        
+        .nav-link-custom {
+            padding: 10px 15px !important;
+            text-align: center;
+        }
+        
+        .btn-logout {
+            margin: 10px 15px;
+            width: calc(100% - 30px);
+            text-align: center;
+        }
+        
+        .navbar-collapse {
+            max-height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+    }
+    
+    /* لاجهزة الموبايل الصغيرة جداً */
+    @media (max-width: 480px) {
+        .navbar-brand {
+            font-size: 0.95rem;
+        }
+        
+        .navbar-brand i {
+            font-size: 0.9rem;
+        }
+        
+        .nav-link-custom {
+            font-size: 0.85rem;
+            padding: 8px 12px !important;
+        }
+    }
+</style>
+
+<script>
+    // تسجيل الخروج
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminUsername');
+                localStorage.removeItem('adminRole');
+                window.location.href = 'login.html';
+            });
+        }
+        
+        // تفعيل الرابط النشط حسب الصفحة الحالية
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = {
+            'dashboard.html': 'navDashboard',
+            'mosques.html': 'navMosques',
+            'preachers.html': 'navPreachers',
+            'admins.html': 'navAdmins'
+        };
+        
+        const activeId = navLinks[currentPage];
+        if (activeId) {
+            const activeLink = document.getElementById(activeId);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+    });
+</script>

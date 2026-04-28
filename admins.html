@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المشرفين - خطباء التبين</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .navbar-brand i {
+            color: #f59e0b;
+        }
+
+        .nav-link-custom {
+            color: #cbd5e1 !important;
+            font-weight: 500;
+            padding: 8px 20px !important;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            color: #f59e0b !important;
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            padding: 8px 20px;
+            border-radius: 12px;
+            color: #fca5a5;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .table-custom th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .spinner-custom {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-chalkboard-user"></i> خطباء التبين</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item"><a class="nav-link-custom" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link-custom" href="mosques.html"><i class="fas fa-mosque"></i> إدارة المساجد</a></li>
+                    <li class="nav-item"><a class="nav-link-custom active" href="preachers.html"><i class="fas fa-users"></i> إدارة الخطباء</a></li>
+                    <li class="nav-item"><a class="nav-link-custom" href="admins.html"><i class="fas fa-users-cog"></i> إدارة المشرفين</a></li>
+                </ul>
+                <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+            </div>
+        </div>
+    </nav> -->
+
+    <!-- ===== شريط التنقل ===== -->
+    <div id="navbar-placeholder"></div>
+
+    <script>
+        // تحميل شريط التنقل
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('خطأ في تحميل شريط التنقل:', error);
+                // في حال عدم التحميل، نعرض نسخة احتياطية
+                document.getElementById('navbar-placeholder').innerHTML = `
+                <nav class="navbar navbar-custom navbar-expand-lg">
+                    <div class="container">
+                        <a class="navbar-brand" href="dashboard.html"><i class="fas fa-chalkboard-user"></i> خطباء التبين</a>
+                        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ms-auto me-3">
+                                <li class="nav-item"><a class="nav-link-custom" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="mosques.html"><i class="fas fa-mosque"></i> المساجد</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="preachers.html"><i class="fas fa-users"></i> الخطباء</a></li>
+                                <li class="nav-item"><a class="nav-link-custom" href="admins.html"><i class="fas fa-users-cog"></i> المشرفين</a></li>
+                            </ul>
+                            <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                        </div>
+                    </div>
+                </nav>
+                <style>${getNavbarStyles()}</style>
+            `;
+            });
+
+        function getNavbarStyles() {
+            return `
+            .navbar-custom { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+            .navbar-brand { font-weight: 800; font-size: 1.4rem; background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; }
+            .navbar-brand i { color: #f59e0b; }
+            .custom-toggler { border: 1px solid rgba(245, 158, 11, 0.5); background: transparent; padding: 8px 12px; border-radius: 8px; }
+            .custom-toggler .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(245, 158, 11, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+            .nav-link-custom { color: #cbd5e1 !important; font-weight: 500; padding: 8px 20px !important; border-radius: 12px; transition: all 0.3s; text-decoration: none; }
+            .nav-link-custom:hover { color: #f59e0b !important; background: rgba(245, 158, 11, 0.1); }
+            .nav-link-custom.active { color: #f59e0b !important; background: rgba(245, 158, 11, 0.15); }
+            .btn-logout { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); padding: 8px 20px; border-radius: 12px; color: #fca5a5; font-weight: 500; transition: all 0.3s; cursor: pointer; }
+            .btn-logout:hover { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; transform: translateY(-2px); }
+            @media (max-width: 768px) { .navbar-brand { font-size: 1.1rem; } .nav-link-custom { padding: 10px 15px !important; text-align: center; } .btn-logout { margin: 10px 15px; width: calc(100% - 30px); text-align: center; } }
+        `;
+        }
+    </script>
+
+    <div class="container">
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-custom"></div>
+            <p class="mt-3 text-muted">جاري تحميل البيانات...</p>
+        </div>
+
+        <div id="adminsContent" style="display: none;"></div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-mosque"></i> نظام إدارة خطباء التبين
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxGfd9nD_Iiy4Mhv-Sxy9kSzBCQFpr40FVtnmap5aESTqJsZZcDjo5wLNNfOZ5TX9Y2Gg/exec'; function checkAuth() {
+            if (localStorage.getItem('adminLoggedIn') !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        let currentAdmins = [];
+
+        async function fetchAdmins() {
+            try {
+                const response = await fetch(`${API_URL}?action=getAdmins`);
+                const result = await response.json();
+                if (result.success) {
+                    currentAdmins = result.data.admins || [];
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function addAdmin(username, password, role) {
+            const response = await fetch(`${API_URL}?action=addAdmin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}`);
+            return await response.json();
+        }
+
+        async function updateAdmin(oldUsername, newUsername, newPassword, newRole) {
+            const response = await fetch(`${API_URL}?action=updateAdmin&oldUsername=${encodeURIComponent(oldUsername)}&newUsername=${encodeURIComponent(newUsername)}&newPassword=${encodeURIComponent(newPassword)}&newRole=${encodeURIComponent(newRole)}`);
+            return await response.json();
+        }
+
+        async function deleteAdmin(username) {
+            const response = await fetch(`${API_URL}?action=deleteAdmin&username=${encodeURIComponent(username)}`);
+            return await response.json();
+        }
+
+        async function loadAdmins() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('adminsContent').style.display = 'none';
+
+            await fetchAdmins();
+
+            let tableRows = '';
+            if (currentAdmins.length === 0) {
+                tableRows = `<tr><td colspan="5" class="text-center text-muted py-4">لا يوجد مشرفين حتى الآن</td></tr>`;
+            } else {
+                tableRows = currentAdmins.map((admin, idx) => `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><span class="admin-username">${admin.username}</span></td>
+                        <td>●●●●●●</td>
+                        <td>${admin.role === 'admin' ? 'مدير' : admin.role === 'supervisor' ? 'مشرف' : admin.role}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-1" onclick='editAdmin(${JSON.stringify(admin)})'>
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick='deleteAdminConfirm("${admin.username}")'>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('adminsContent').innerHTML = `
+                <div class="content-card">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                        <h4 class="mb-0"><i class="fas fa-users-cog"></i> إدارة المشرفين</h4>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                            <i class="fas fa-plus"></i> إضافة مشرف جديد
+                        </button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>#</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الصلاحية</th><th>الإجراءات</th></tr></thead>
+                            <tbody>${tableRows}</tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i> <strong>المدير</strong> له صلاحيات كاملة، <strong>المشرف</strong> له صلاحيات محدودة
+                    </div>
+                </div>
+                
+                <!-- مودال الإضافة -->
+                <div class="modal fade" id="addModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header"><h5 class="modal-title"><i class="fas fa-user-plus"></i> إضافة مشرف جديد</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                            <div class="modal-body">
+                                <div id="addAlert"></div>
+                                <div class="mb-3"><label>اسم المستخدم</label><input type="text" id="addUsername" class="form-control"></div>
+                                <div class="mb-3"><label>كلمة المرور</label><input type="password" id="addPassword" class="form-control"></div>
+                                <div class="mb-3"><label>الصلاحية</label><select id="addRole" class="form-select"><option value="admin">مدير</option><option value="supervisor">مشرف</option></select></div>
+                            </div>
+                            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button><button type="button" class="btn btn-primary" onclick="submitAdd()">إضافة</button></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- مودال التعديل -->
+                <div class="modal fade" id="editModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header"><h5 class="modal-title"><i class="fas fa-user-edit"></i> تعديل مشرف</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                            <div class="modal-body">
+                                <div id="editAlert"></div>
+                                <div class="mb-3"><label>اسم المستخدم (الجديد)</label><input type="text" id="editUsername" class="form-control"></div>
+                                <div class="mb-3"><label>كلمة المرور (الجديدة)</label><input type="password" id="editPassword" class="form-control"></div>
+                                <div class="mb-3"><label>الصلاحية</label><select id="editRole" class="form-select"><option value="admin">مدير</option><option value="supervisor">مشرف</option></select></div>
+                            </div>
+                            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button><button type="button" class="btn btn-warning" onclick="submitEdit()">تحديث</button></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('adminsContent').style.display = 'block';
+        }
+
+        let editingAdmin = null;
+
+        window.editAdmin = (admin) => {
+            editingAdmin = admin;
+            document.getElementById('editUsername').value = admin.username;
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editRole').value = admin.role || 'admin';
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        };
+
+        window.submitAdd = async () => {
+            const username = document.getElementById('addUsername').value.trim();
+            const password = document.getElementById('addPassword').value.trim();
+            const role = document.getElementById('addRole').value;
+
+            if (!username || !password) {
+                document.getElementById('addAlert').innerHTML = '<div class="alert alert-danger">يرجى إدخال البيانات</div>';
+                return;
+            }
+
+            const result = await addAdmin(username, password, role);
+            if (result.success) {
+                document.getElementById('addAlert').innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+                setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('addModal')).hide(); loadAdmins(); }, 1000);
+            } else {
+                document.getElementById('addAlert').innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+            }
+        };
+
+        window.submitEdit = async () => {
+            const newUsername = document.getElementById('editUsername').value.trim();
+            const newPassword = document.getElementById('editPassword').value.trim();
+            const newRole = document.getElementById('editRole').value;
+
+            if (!newUsername || !newPassword) {
+                document.getElementById('editAlert').innerHTML = '<div class="alert alert-danger">يرجى إدخال البيانات</div>';
+                return;
+            }
+
+            const result = await updateAdmin(editingAdmin.username, newUsername, newPassword, newRole);
+            if (result.success) {
+                document.getElementById('editAlert').innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+                setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('editModal')).hide(); loadAdmins(); }, 1000);
+            } else {
+                document.getElementById('editAlert').innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+            }
+        };
+
+        window.deleteAdminConfirm = (username) => {
+            if (confirm(`هل أنت متأكد من حذف "${username}"؟`)) {
+                deleteAdmin(username).then(result => {
+                    alert(result.message);
+                    if (result.success) loadAdmins();
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) return;
+            loadAdmins();
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        });
+    </script>
+</body>
+
+</html>
